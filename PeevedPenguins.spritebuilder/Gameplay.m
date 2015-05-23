@@ -13,11 +13,14 @@
     CCNode *_levelNode;
     CCNode *_catapultArm;
      CCNode *_contentNode;
+    CCNode *_pullbackNode;
 }
 
 
 // is called when CCB file has completed loading
 - (void)didLoadFromCCB {
+    // nothing shall collide with our invisible nodes
+    _pullbackNode.physicsBody.collisionMask = @[];
     // visualize physics bodies & joints
     _physicsNode.debugDraw = TRUE;
     // tell this scene to accept touches
