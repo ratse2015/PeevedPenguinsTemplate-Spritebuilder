@@ -18,7 +18,7 @@
 - (void)didLoadFromCCB {
     // tell this scene to accept touches
     self.userInteractionEnabled = TRUE;
-        _catapultArm = [CCBReader load:@"_catapultArm"];
+        _catapultArm = [CCBReader load:@"catapultArm"];
 }
 
 // called on every touch in this scene
