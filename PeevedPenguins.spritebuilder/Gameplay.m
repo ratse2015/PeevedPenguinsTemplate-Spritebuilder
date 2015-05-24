@@ -11,15 +11,15 @@
 
 @implementation Gameplay{
     CCPhysicsNode *_physicsNode;
-    CCNode *_levelNode;
-    CCNode *_catapultArm;
-     CCNode *_contentNode;
-    CCNode *_pullbackNode;
-    CCNode *_mouseJointNode;
-    CCPhysicsJoint *_mouseJoint;
+    CCNode * _levelNode;
+    CCNode * _catapultArm;
+     CCNode  * _contentNode;
+    CCNode * _pullbackNode;
+    CCNode * _mouseJointNode;
+    CCPhysicsJoint * _mouseJoint;
     
-    CCNode *_currentPenguin;
-    CCPhysicsJoint *_penguinCatapultJoint;
+    CCNode * _currentPenguin;
+    CCPhysicsJoint * _penguinCatapultJoint;
 }
 
 - (void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB {
