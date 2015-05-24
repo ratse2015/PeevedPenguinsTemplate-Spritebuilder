@@ -17,11 +17,13 @@
         CCLOG(@"Seal created");
     }
     
-    - (void)didLoadFromCCB {
-        self.physicsBody.collisionType = @"seal";
-    }
+   
     
     return self;
+}
+
+- (void)didLoadFromCCB {
+    self.physicsBody.collisionType = @"seal";
 }
 
 @end
