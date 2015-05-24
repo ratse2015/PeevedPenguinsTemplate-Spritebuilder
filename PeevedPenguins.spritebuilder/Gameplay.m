@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Apportable. All rights reserved.
 //
 
+#import "CCPhysics+ObjectiveChipmunk.h"
 #import "Gameplay.h"
 
 @implementation Gameplay{
@@ -21,9 +22,35 @@
     CCPhysicsJoint *_penguinCatapultJoint;
 }
 
+- (void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB {
+    float energy = [pair totalKineticEnergy];
+    
+    // if energy is large enough, remove the seal
+    if (energy > 5000.f) {
+        [[_physicsNode space] addPostStepBlock:^{
+            [self sealRemoved:nodeA];
+        } key:nodeA];
+    }
+}
+
+- (void)sealRemoved:(CCNode *)seal {
+    // load particle effect
+    CCParticleSystem *explosion = (CCParticleSystem *)[CCBReader load:@"SealExplosion"];
+    // make the particle effect clean itself up, once it is completed
+    explosion.autoRemoveOnFinish = TRUE;
+    // place the particle effect on the seals position
+    explosion.position = seal.position;
+    // add the particle effect to the same node the seal is on
+    [seal.parent addChild:explosion];
+    
+    // finally, remove the destroyed seal
+    [seal removeFromParent];
+}
 
 // is called when CCB file has completed loading
 - (void)didLoadFromCCB {
+    
+    _physicsNode.collisionDelegate = self;
     // nothing shall collide with our invisible nodes
     _pullbackNode.physicsBody.collisionMask = @[];
     _mouseJointNode.physicsBody.collisionMask = @[];

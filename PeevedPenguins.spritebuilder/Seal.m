@@ -17,6 +17,10 @@
         CCLOG(@"Seal created");
     }
     
+    - (void)didLoadFromCCB {
+        self.physicsBody.collisionType = @"seal";
+    }
+    
     return self;
 }
 
