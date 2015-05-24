@@ -7,7 +7,7 @@
 //
 
 #import "CCSprite.h"
-
+#import "Penguin.h"
 
 
 @interface Gameplay : CCNode <CCPhysicsCollisionDelegate>
