@@ -9,6 +9,8 @@
 #import "CCPhysics+ObjectiveChipmunk.h"
 #import "Gameplay.h"
 
+
+static const float MIN_SPEED = 5.f;
 @implementation Gameplay{
     CCPhysicsNode *_physicsNode;
     CCNode * _levelNode;
@@ -17,9 +19,11 @@
     CCNode * _pullbackNode;
     CCNode * _mouseJointNode;
     CCPhysicsJoint * _mouseJoint;
-    
+     CCAction *_followPenguin;
     CCNode * _currentPenguin;
     CCPhysicsJoint * _penguinCatapultJoint;
+    
+  
 }
 
 - (void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB {
@@ -112,8 +116,8 @@
         _currentPenguin.physicsBody.allowsRotation = TRUE;
         
         // follow the flying penguin
-        CCActionFollow *follow = [CCActionFollow actionWithTarget:_currentPenguin worldBoundary:self.boundingBox];
-        [_contentNode runAction:follow];
+        _followPenguin = [CCActionFollow actionWithTarget:_currentPenguin worldBoundary:self.boundingBox];
+        [_contentNode runAction:_followPenguin];
         
         // releases the joint and lets the catapult snap back
         [_mouseJoint invalidate];
@@ -121,6 +125,13 @@
     }
 }
 
+- (void)nextAttempt {
+    _currentPenguin = nil;
+    [_contentNode stopAction:_followPenguin];
+    
+    CCActionMoveTo *actionMoveTo = [CCActionMoveTo actionWithDuration:1.f position:ccp(0, 0)];
+    [_contentNode runAction:actionMoveTo];
+}
 
 -(void) touchEnded:(UITouch *)touch withEvent:(UIEvent *)event
 {
@@ -163,6 +174,29 @@
 - (void)retry {
     // reload this level
     [[CCDirector sharedDirector] replaceScene: [CCBReader loadAsScene:@"Gameplay"]];
+}
+
+- (void)update:(CCTime)delta
+{
+    // if speed is below minimum speed, assume this attempt is over
+    if (ccpLength(_currentPenguin.physicsBody.velocity) < MIN_SPEED){
+        [self nextAttempt];
+        return;
+    }
+    
+    int xMin = _currentPenguin.boundingBox.origin.x;
+    
+    if (xMin < self.boundingBox.origin.x) {
+        [self nextAttempt];
+        return;
+    }
+    
+    int xMax = xMin + _currentPenguin.boundingBox.size.width;
+    
+    if (xMax > (self.boundingBox.origin.x + self.boundingBox.size.width)) {
+        [self nextAttempt];
+        return;
+    }
 }
 
 @end
